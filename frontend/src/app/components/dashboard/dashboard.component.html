@@ -1,0 +1,124 @@
+<div class="navbar">
+  <a routerLink="/dashboard" routerLinkActive="active">
+    <i class="fas fa-home"></i>
+    <span>Главная</span>
+  </a>
+  <a routerLink="/transactions" routerLinkActive="active">
+    <i class="fas fa-history"></i>
+    <span>История</span>
+  </a>
+  <a routerLink="/categories" routerLinkActive="active">
+    <i class="fas fa-folder"></i>
+    <span>Категории</span>
+  </a>
+  <a routerLink="/saving-goals" routerLinkActive="active">
+    <i class="fas fa-bullseye"></i>
+    <span>Цели</span>
+  </a>
+  <a routerLink="/debts" routerLinkActive="active">
+    <i class="fas fa-hand-holding-usd"></i>
+    <span>Долги</span>
+  </a>
+  <button (click)="logout()" class="logout-btn">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Выйти</span>
+  </button>
+</div>
+
+<div class="container">
+  <!-- Баланс -->
+  <div class="card" style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div style="font-size: 14px; opacity: 0.8;">Ваш баланс</div>
+    <div class="amount-large">{{ stats?.balance || 0 }} ₸</div>
+  </div>
+
+  <!-- Доходы / Расходы (кратко) -->
+  <div style="display: flex; gap: 12px;">
+    <div class="card" style="flex: 1; text-align: center;">
+      <div style="color: #34c759;">
+        <i class="fas fa-arrow-up"></i> Доходы
+      </div>
+      <div style="font-size: 20px; font-weight: 600;">{{ stats?.total_income || 0 }} ₸</div>
+    </div>
+    <div class="card" style="flex: 1; text-align: center;">
+      <div style="color: #ff3b30;">
+        <i class="fas fa-arrow-down"></i> Расходы
+      </div>
+      <div style="font-size: 20px; font-weight: 600;">{{ stats?.total_expense || 0 }} ₸</div>
+    </div>
+  </div>
+
+  <!-- Быстрое добавление дохода -->
+  <div class="card">
+    <div style="font-weight: 600; margin-bottom: 16px;">
+      <i class="fas fa-plus-circle" style="color: #34c759;"></i> Добавить доход
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <input type="number" [(ngModel)]="incomeAmount" placeholder="Сумма" class="input-small" style="flex: 2;">
+      <input type="text" [(ngModel)]="incomeDescription" placeholder="Описание" class="input-small" style="flex: 3;">
+      <select [(ngModel)]="incomeCategoryId" class="input-small" style="flex: 2;">
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
+      <button class="btn-success" (click)="addIncome()" style="flex: 1;">
+        <i class="fas fa-plus"></i> Добавить
+      </button>
+    </div>
+  </div>
+
+  <!-- Быстрое добавление расхода -->
+  <div class="card">
+    <div style="font-weight: 600; margin-bottom: 16px;">
+      <i class="fas fa-minus-circle" style="color: #ff3b30;"></i> Добавить расход
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <input type="number" [(ngModel)]="expenseAmount" placeholder="Сумма" class="input-small" style="flex: 2;">
+      <input type="text" [(ngModel)]="expenseDescription" placeholder="Описание" class="input-small" style="flex: 3;">
+      <select [(ngModel)]="expenseCategoryId" class="input-small" style="flex: 2;">
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
+      <button class="btn-danger" (click)="addExpense()" style="flex: 1;">
+        <i class="fas fa-minus"></i> Добавить
+      </button>
+    </div>
+  </div>
+
+  <!-- График доходов/расходов -->
+  <div class="card">
+    <div style="font-weight: 600; margin-bottom: 16px;">
+      <i class="fas fa-chart-line"></i> Динамика за 7 дней
+    </div>
+    <div *ngIf="transactions.length === 0" style="text-align: center; padding: 40px; color: #8e8e93;">
+      <i class="fas fa-chart-line" style="font-size: 48px; margin-bottom: 12px;"></i>
+      <p>Нет данных для графика</p>
+      <p style="font-size: 12px;">Добавьте транзакции, чтобы увидеть динамику</p>
+    </div>
+    <canvas #lineChart style="width: 100%; height: 250px; display: {{ transactions.length === 0 ? 'none' : 'block' }};"></canvas>
+  </div>
+
+  <!-- Быстрые кнопки расходов (с выбором суммы) -->
+  <div class="card">
+    <div style="font-weight: 600; margin-bottom: 16px;">
+      <i class="fas fa-bolt"></i> Быстрые расходы
+    </div>
+    <div class="category-grid">
+      <div class="category-item" *ngFor="let cat of quickCategories" (click)="showAmountDialog(cat)">
+        <div class="category-icon">
+          <i [class]="cat.icon"></i>
+        </div>
+        <div class="category-name">{{ cat.name }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно для ввода суммы -->
+<div class="modal" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Расход: {{ selectedCategory?.name }}</h3>
+    <input type="number" [(ngModel)]="customAmount" placeholder="Сумма" class="input-field" autofocus>
+    <div style="display: flex; gap: 12px; margin-top: 20px;">
+      <button class="btn-primary" (click)="addQuickExpense()">Добавить</button>
+      <button class="btn-secondary" (click)="closeModal()">Отмена</button>
+    </div>
+  </div>
+</div>

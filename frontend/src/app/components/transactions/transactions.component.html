@@ -1,0 +1,106 @@
+<div class="navbar">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <i class="fas fa-home"></i>
+      <span>Главная</span>
+    </a>
+    <a routerLink="/transactions" routerLinkActive="active">
+      <i class="fas fa-history"></i>
+      <span>История</span>
+    </a>
+    <a routerLink="/categories" routerLinkActive="active">
+      <i class="fas fa-folder"></i>
+      <span>Категории</span>
+    </a>
+    <a routerLink="/saving-goals" routerLinkActive="active">
+      <i class="fas fa-bullseye"></i>
+      <span>Цели</span>
+    </a>
+    <a routerLink="/debts" routerLinkActive="active">
+      <i class="fas fa-hand-holding-usd"></i>
+      <span>Долги</span>
+    </a>
+    <button (click)="logout()" style="background: none; border: none; cursor: pointer; color: #8e8e93; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Выйти</span>
+    </button>
+  </div>
+  
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1 style="font-size: 24px;">
+        <i class="fas fa-list-ul"></i> История
+      </h1>
+      <button class="btn-secondary" (click)="showForm = !showForm">
+        <i class="fas fa-plus"></i> Добавить
+      </button>
+    </div>
+  
+    <!-- Форма добавления -->
+    <div class="card" *ngIf="showForm">
+      <h3 style="margin-bottom: 16px;">
+        <i class="fas fa-plus-circle"></i> Новая операция
+      </h3>
+      
+      <input type="number" [(ngModel)]="newTransaction.amount" placeholder="Сумма" style="width: 100%; padding: 14px; border: 1px solid #e9ecef; border-radius: 14px; margin-bottom: 12px; font-size: 16px;">
+      
+      <select [(ngModel)]="newTransaction.type" style="width: 100%; padding: 14px; border: 1px solid #e9ecef; border-radius: 14px; margin-bottom: 12px; font-size: 16px;">
+        <option value="expense">
+          <i class="fas fa-arrow-down"></i> Расход
+        </option>
+        <option value="income">
+          <i class="fas fa-arrow-up"></i> Доход
+        </option>
+      </select>
+      
+      <input type="text" [(ngModel)]="newTransaction.description" placeholder="Описание" style="width: 100%; padding: 14px; border: 1px solid #e9ecef; border-radius: 14px; margin-bottom: 12px; font-size: 16px;">
+      
+      <input type="date" [(ngModel)]="newTransaction.date" style="width: 100%; padding: 14px; border: 1px solid #e9ecef; border-radius: 14px; margin-bottom: 12px; font-size: 16px;">
+      
+      <select [(ngModel)]="newTransaction.category" style="width: 100%; padding: 14px; border: 1px solid #e9ecef; border-radius: 14px; margin-bottom: 20px; font-size: 16px;">
+        <option *ngFor="let cat of categories" [value]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+      
+      <button class="btn-primary" (click)="saveTransaction()">
+        <i class="fas fa-save"></i> Сохранить
+      </button>
+      <button class="btn-secondary" style="margin-top: 8px;" (click)="showForm = false">
+        <i class="fas fa-times"></i> Отмена
+      </button>
+    </div>
+  
+    <!-- Список транзакций -->
+    <div class="card" *ngFor="let t of transactions" style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 600; font-size: 16px;">
+            {{ t.category_name || 'Без категории' }}
+          </div>
+          <div style="font-size: 12px; color: #8e8e93; margin-top: 4px;">
+            <i class="far fa-calendar-alt"></i> {{ t.date }}
+            <span *ngIf="t.description" style="margin-left: 8px;">
+              <i class="far fa-comment"></i> {{ t.description }}
+            </span>
+          </div>
+        </div>
+        <div [class.amount-positive]="t.type === 'income'" [class.amount-negative]="t.type === 'expense'" style="font-size: 18px; font-weight: 700;">
+          {{ t.type === 'income' ? '+' : '-' }}{{ t.amount }} ₸
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0;">
+        <button class="btn-secondary" style="flex: 1; padding: 8px;" (click)="editTransaction(t)">
+          <i class="fas fa-edit"></i> Редактировать
+        </button>
+        <button class="btn-secondary" style="flex: 1; padding: 8px; color: #ff3b30;" (click)="deleteTransaction(t.id!)">
+          <i class="fas fa-trash-alt"></i> Удалить
+        </button>
+      </div>
+    </div>
+  
+    <div *ngIf="transactions.length === 0" class="card" style="text-align: center; color: #8e8e93;">
+      <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 12px;"></i>
+      <p>Нет операций</p>
+    </div>
+  </div>

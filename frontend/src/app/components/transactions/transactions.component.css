@@ -1,0 +1,44 @@
+.transactions {
+    padding: 20px;
+  }
+  .btn-add {
+    background: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .form-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  input, select {
+    margin: 5px;
+    padding: 8px;
+  }
+  .btn-save {
+    background: green;
+    color: white;
+    padding: 8px 16px;
+  }
+  .btn-cancel {
+    background: gray;
+    color: white;
+    padding: 8px 16px;
+    margin-left: 10px;
+  }
+  .transaction-list {
+    list-style: none;
+  }
+  .transaction-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .btn-edit, .btn-delete {
+    margin-left: 10px;
+    cursor: pointer;
+  }

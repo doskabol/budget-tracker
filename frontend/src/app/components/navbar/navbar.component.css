@@ -1,0 +1,19 @@
+nav {
+    background: #333;
+    padding: 15px;
+    display: flex;
+    gap: 20px;
+  }
+  nav a, nav button {
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  nav a.active {
+    color: yellow;
+  }
+  nav button:hover {
+    color: red;
+  }

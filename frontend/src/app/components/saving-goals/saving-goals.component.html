@@ -1,0 +1,112 @@
+<div class="navbar">
+  <a routerLink="/dashboard" routerLinkActive="active">
+    <i class="fas fa-home"></i>
+    <span>Главная</span>
+  </a>
+  <a routerLink="/transactions" routerLinkActive="active">
+    <i class="fas fa-history"></i>
+    <span>История</span>
+  </a>
+  <a routerLink="/categories" routerLinkActive="active">
+    <i class="fas fa-folder"></i>
+    <span>Категории</span>
+  </a>
+  <a routerLink="/saving-goals" routerLinkActive="active">
+    <i class="fas fa-bullseye"></i>
+    <span>Цели</span>
+  </a>
+  <a routerLink="/debts" routerLinkActive="active">
+    <i class="fas fa-hand-holding-usd"></i>
+    <span>Долги</span>
+  </a>
+  <button (click)="logout()" class="logout-btn">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Выйти</span>
+  </button>
+</div>
+
+<div class="container">
+  <h1 style="margin-bottom: 24px;">
+    <i class="fas fa-bullseye"></i> Цели накоплений
+  </h1>
+
+  <!-- Форма добавления цели -->
+  <div class="card">
+    <h3 style="margin-bottom: 16px;">
+      <i class="fas fa-plus-circle"></i> Новая цель
+    </h3>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <input type="text" [(ngModel)]="newGoal.name" placeholder="Название цели (например: Новая машина)" class="input-field">
+      
+      <div style="display: flex; gap: 12px;">
+        <input type="number" [(ngModel)]="newGoal.target_amount" placeholder="Целевая сумма" class="input-field" style="flex: 1;">
+        <input type="date" [(ngModel)]="newGoal.deadline" class="input-field" style="flex: 1;">
+      </div>
+      
+      <button class="btn-primary" (click)="addGoal()">
+        <i class="fas fa-plus"></i> Добавить цель
+      </button>
+    </div>
+  </div>
+
+  <!-- Список целей -->
+  <div class="goals-list">
+    <div *ngFor="let goal of goals" class="goal-card">
+      <div class="goal-header">
+        <div class="goal-icon">
+          <i class="fas fa-flag-checkered"></i>
+        </div>
+        <div class="goal-info">
+          <div class="goal-name">{{ goal.name }}</div>
+          <div class="goal-deadline" *ngIf="goal.deadline">
+            <i class="far fa-calendar-alt"></i> до {{ formatDate(goal.deadline) }}
+          </div>
+        </div>
+        <button class="delete-goal-btn" (click)="deleteGoal(goal.id!)">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+      
+      <!-- Прогресс бар -->
+      <div class="progress-section">
+        <div class="progress-labels">
+          <span>{{ goal.current_amount }} ₸</span>
+          <span>из {{ goal.target_amount }} ₸</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgressPercent(goal)"></div>
+        </div>
+        <div class="progress-percent">{{ getProgressPercent(goal) }}%</div>
+      </div>
+      
+      <!-- Кнопки для добавления/снятия -->
+      <div class="goal-actions">
+        <button class="btn-add-money" (click)="showAddMoneyModal(goal)">
+          <i class="fas fa-plus-circle"></i> Добавить
+        </button>
+        <button class="btn-withdraw" (click)="showWithdrawMoneyModal(goal)">
+          <i class="fas fa-minus-circle"></i> Снять
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="goals.length === 0" class="empty-state">
+    <i class="fas fa-flag-checkered"></i>
+    <p>Нет целей накоплений</p>
+    <p style="font-size: 12px;">Добавьте цель, чтобы начать копить!</p>
+  </div>
+</div>
+
+<!-- Модальное окно для добавления денег -->
+<div class="modal" *ngIf="showMoneyModal" (click)="closeMoneyModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>{{ modalTitle }}</h3>
+    <p style="margin: 8px 0; color: #8e8e93;">Цель: {{ selectedGoal?.name }}</p>
+    <input type="number" [(ngModel)]="moneyAmount" placeholder="Сумма" class="input-field" autofocus>
+    <div style="display: flex; gap: 12px; margin-top: 20px;">
+      <button class="btn-primary" (click)="updateGoalMoney()">Подтвердить</button>
+      <button class="btn-secondary" (click)="closeMoneyModal()">Отмена</button>
+    </div>
+  </div>
+</div>
