@@ -12,7 +12,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // Transactions
   getTransactions(): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(`${this.apiUrl}/transactions/`);
   }
@@ -26,7 +25,6 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/transactions/${id}/`);
   }
 
-  // Categories
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/categories/`);
   }
@@ -34,18 +32,19 @@ export class ApiService {
     return this.http.post<Category>(`${this.apiUrl}/categories/`, category);
   }
 
-  // Saving Goals
   getSavingGoals(): Observable<SavingGoal[]> {
     return this.http.get<SavingGoal[]>(`${this.apiUrl}/saving-goals/`);
   }
   createSavingGoal(goal: SavingGoal): Observable<SavingGoal> {
     return this.http.post<SavingGoal>(`${this.apiUrl}/saving-goals/`, goal);
   }
+  updateSavingGoal(id: number, goal: SavingGoal): Observable<SavingGoal> {
+    return this.http.put<SavingGoal>(`${this.apiUrl}/saving-goals/${id}/`, goal);
+  }
   deleteSavingGoal(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/saving-goals/${id}/`);
   }
 
-  // Debts
   getDebts(): Observable<Debt[]> {
     return this.http.get<Debt[]>(`${this.apiUrl}/debts/`);
   }
@@ -56,12 +55,7 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/debts/${id}/`);
   }
 
-  // Stats
   getStats(): Observable<any> {
     return this.http.get(`${this.apiUrl}/stats/`);
-  }
-
-  updateSavingGoal(id: number, goal: SavingGoal): Observable<SavingGoal> {
-    return this.http.put<SavingGoal>(`${this.apiUrl}/saving-goals/${id}/`, goal);
   }
 }

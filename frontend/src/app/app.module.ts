@@ -13,6 +13,7 @@ import { CategoriesComponent } from './components/categories/categories.componen
 import { SavingGoalsComponent } from './components/saving-goals/saving-goals.component';
 import { DebtsComponent } from './components/debts/debts.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthGuard } from './guards/auth.guard';
@@ -27,7 +28,8 @@ import { AuthGuard } from './guards/auth.guard';
     CategoriesComponent,
     SavingGoalsComponent,
     DebtsComponent,
-    NavbarComponent
+    NavbarComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +43,7 @@ import { AuthGuard } from './guards/auth.guard';
       { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
       { path: 'saving-goals', component: SavingGoalsComponent, canActivate: [AuthGuard] },
       { path: 'debts', component: DebtsComponent, canActivate: [AuthGuard] },
+      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
       { path: '**', redirectTo: '/dashboard' }
     ])
@@ -51,4 +54,4 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { } 

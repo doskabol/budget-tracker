@@ -15,17 +15,25 @@ export class SavingGoalsComponent implements OnInit {
     name: '',
     target_amount: 0,
     current_amount: 0,
-    deadline: '',
-    progress_percent: 0
+    deadline: null
   };
   
-  // Модальное окно для добавления/снятия денег
+  // Для добавления/снятия денег
   showMoneyModal: boolean = false;
   selectedGoal: SavingGoal | null = null;
   moneyAmount: number = 0;
   modalType: 'add' | 'withdraw' = 'add';
-  
   modalTitle: string = '';
+  
+  // Для редактирования цели
+  showEditModal: boolean = false;
+  editGoalData: SavingGoal = {
+    name: '',
+    target_amount: 0,
+    current_amount: 0,
+    deadline: null
+  };
+  editGoalId: number = 0;
 
   constructor(
     private apiService: ApiService,
@@ -37,43 +45,109 @@ export class SavingGoalsComponent implements OnInit {
   }
 
   loadGoals() {
-    this.apiService.getSavingGoals().subscribe(data => {
-      this.goals = data;
+    this.apiService.getSavingGoals().subscribe({
+      next: (data) => {
+        this.goals = data;
+      },
+      error: (err) => console.error('Ошибка загрузки целей:', err)
     });
   }
 
+  // ========== Создание цели ==========
   addGoal() {
-    if (!this.newGoal.name || this.newGoal.target_amount <= 0) {
-      alert('Заполните название и целевую сумму');
+    if (!this.newGoal.name || this.newGoal.name.trim() === '') {
+      alert('Введите название цели');
+      return;
+    }
+    
+    if (this.newGoal.target_amount <= 0) {
+      alert('Целевая сумма должна быть больше 0');
       return;
     }
 
-    this.apiService.createSavingGoal(this.newGoal).subscribe({
+    const goalToSend = {
+      name: this.newGoal.name.trim(),
+      target_amount: Number(this.newGoal.target_amount).toFixed(2),
+      current_amount: 0,
+      deadline: this.newGoal.deadline || null
+    };
+
+    this.apiService.createSavingGoal(goalToSend as any).subscribe({
       next: () => {
         this.loadGoals();
-        this.newGoal = { name: '', target_amount: 0, current_amount: 0, deadline: '', progress_percent: 0 };
+        this.newGoal = { name: '', target_amount: 0, current_amount: 0, deadline: null };
         alert('Цель добавлена');
       },
       error: (err) => {
-        console.error('Ошибка:', err);
+        console.error(err);
         alert('Ошибка при создании цели');
       }
     });
   }
 
+  // ========== Удаление цели ==========
   deleteGoal(id: number) {
     if (confirm('Удалить цель?')) {
       this.apiService.deleteSavingGoal(id).subscribe({
         next: () => this.loadGoals(),
-        error: (err) => console.error('Ошибка удаления:', err)
+        error: (err) => console.error(err)
       });
     }
   }
 
+  // ========== Редактирование цели ==========
+  showEditGoalModal(goal: SavingGoal) {
+    this.editGoalId = goal.id!;
+    this.editGoalData = {
+      name: goal.name,
+      target_amount: goal.target_amount,
+      current_amount: goal.current_amount,
+      deadline: goal.deadline
+    };
+    this.showEditModal = true;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editGoalData = { name: '', target_amount: 0, current_amount: 0, deadline: null };
+    this.editGoalId = 0;
+  }
+
+  updateGoal() {
+    if (!this.editGoalData.name || this.editGoalData.name.trim() === '') {
+      alert('Введите название цели');
+      return;
+    }
+    
+    if (this.editGoalData.target_amount <= 0) {
+      alert('Целевая сумма должна быть больше 0');
+      return;
+    }
+
+    const updateData = {
+      name: this.editGoalData.name.trim(),
+      target_amount: Number(this.editGoalData.target_amount).toFixed(2),
+      deadline: this.editGoalData.deadline || null
+    };
+
+    this.apiService.updateSavingGoal(this.editGoalId, updateData as any).subscribe({
+      next: () => {
+        this.loadGoals();
+        this.closeEditModal();
+        alert('Цель обновлена');
+      },
+      error: (err) => {
+        console.error('Ошибка:', err);
+        alert('Ошибка при обновлении цели');
+      }
+    });
+  }
+
+  // ========== Добавление/снятие денег ==========
   showAddMoneyModal(goal: SavingGoal) {
     this.selectedGoal = goal;
     this.modalType = 'add';
-    this.modalTitle = '💰 Добавить деньги на цель';
+    this.modalTitle = '💰 Добавить деньги';
     this.moneyAmount = 0;
     this.showMoneyModal = true;
   }
@@ -81,7 +155,7 @@ export class SavingGoalsComponent implements OnInit {
   showWithdrawMoneyModal(goal: SavingGoal) {
     this.selectedGoal = goal;
     this.modalType = 'withdraw';
-    this.modalTitle = '💸 Снять деньги с цели';
+    this.modalTitle = '💸 Снять деньги';
     this.moneyAmount = 0;
     this.showMoneyModal = true;
   }
@@ -111,13 +185,11 @@ export class SavingGoalsComponent implements OnInit {
       newAmount -= this.moneyAmount;
     }
 
-    const updatedGoal = {
-      ...this.selectedGoal,
-      current_amount: newAmount
+    const updateData = {
+      current_amount: Number(newAmount).toFixed(2)
     };
 
-    // Используем update (нужно добавить метод в api.service.ts)
-    this.apiService.updateSavingGoal(this.selectedGoal.id!, updatedGoal).subscribe({
+    this.apiService.updateSavingGoal(this.selectedGoal.id!, updateData as any).subscribe({
       next: () => {
         this.loadGoals();
         this.closeMoneyModal();
@@ -125,7 +197,7 @@ export class SavingGoalsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Ошибка:', err);
-        alert('Ошибка при обновлении цели');
+        alert('Ошибка при обновлении суммы');
       }
     });
   }
@@ -136,8 +208,8 @@ export class SavingGoalsComponent implements OnInit {
     return Math.min(100, Math.round(percent));
   }
 
-  formatDate(dateStr: string): string {
-    if (!dateStr) return '';
+  formatDate(dateStr: string | null): string {
+    if (!dateStr) return 'без срока';
     const [year, month, day] = dateStr.split('-');
     return `${day}.${month}.${year}`;
   }

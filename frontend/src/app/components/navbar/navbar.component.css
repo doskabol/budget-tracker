@@ -1,19 +1,17 @@
-nav {
-    background: #333;
-    padding: 15px;
-    display: flex;
-    gap: 20px;
-  }
-  nav a, nav button {
-    color: white;
-    text-decoration: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  nav a.active {
-    color: yellow;
-  }
-  nav button:hover {
-    color: red;
-  }
+/* Добавь в конец файла */
+.profile-link {
+  position: relative;
+}
+
+.avatar-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

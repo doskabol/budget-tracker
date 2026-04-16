@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+import os
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -46,11 +50,6 @@ class SavingGoal(models.Model):
     deadline = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saving_goals')
     
-    def progress_percent(self):
-        if self.target_amount > 0:
-            return int((self.current_amount / self.target_amount) * 100)
-        return 0
-    
     def __str__(self):
         return f"{self.name}: {self.current_amount}/{self.target_amount}"
 
@@ -69,3 +68,11 @@ class Debt(models.Model):
     
     def __str__(self):
         return f"{'Я должен' if self.direction == 'i_owe' else 'Мне должны'} {self.name}: {self.amount}"
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    phone = models.CharField(max_length=20, blank=True, default='')
+    
+    def __str__(self):
+        return f"{self.user.username}'s profile"

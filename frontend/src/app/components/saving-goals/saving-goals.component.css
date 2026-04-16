@@ -46,6 +46,24 @@
   color: #8e8e93;
 }
 
+.goal-actions-header {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-goal-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007aff;
+  font-size: 18px;
+  padding: 8px;
+}
+
+.edit-goal-btn:hover {
+  color: #0055cc;
+}
+
 .delete-goal-btn {
   background: none;
   border: none;
@@ -158,7 +176,6 @@
   cursor: pointer;
 }
 
-/* Модальное окно */
 .modal {
   position: fixed;
   top: 0;

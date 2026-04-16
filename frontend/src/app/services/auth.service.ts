@@ -15,7 +15,10 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {
     const token = this.getToken();
     if (token) {
-      this.userSubject.next(null);
+      this.loadProfile().subscribe({
+        next: (user) => this.userSubject.next(user),
+        error: () => this.logout()
+      });
     }
   }
 
@@ -47,5 +50,38 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile/`);
+  }
+
+  updateProfile(data: { email?: string; first_name?: string; last_name?: string }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/profile/update/`, data);
+  }
+
+  changePassword(oldPassword: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/change-password/`, {
+      old_password: oldPassword,
+      new_password: newPassword
+    });
+  }
+
+  loadProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile/`);
+  }
+
+  getProfileFull(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile-full/`);
+  }
+  
+  uploadAvatar(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    return this.http.post(`${this.apiUrl}/upload-avatar/`, formData);
+  }
+  
+  updateProfileFull(data: { email?: string; first_name?: string; last_name?: string; phone?: string }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update-profile-full/`, data);
   }
 }
