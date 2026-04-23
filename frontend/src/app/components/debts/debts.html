@@ -1,0 +1,195 @@
+<div class="debts-container">
+    <!-- Шапка -->
+    <div class="page-header">
+      <div class="header-icon">
+        <i class="fas fa-hand-holding-usd"></i>
+      </div>
+      <div class="header-text">
+        <h1>Долги</h1>
+        <p>Управляйте долгами и возвратами</p>
+      </div>
+      <button class="btn-add" (click)="showAddForm = !showAddForm">
+        <i class="fas fa-plus"></i> Добавить долг
+      </button>
+    </div>
+  
+    <!-- Статистика -->
+    <div class="stats-row">
+      <div class="stat-card owe-me">
+        <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+        <div class="stat-info">
+          <span>Должны мне</span>
+          <strong>{{ totalOweMe | number:'1.2-2' }} ₸</strong>
+        </div>
+      </div>
+      <div class="stat-card i-owe">
+        <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+        <div class="stat-info">
+          <span>Я должен</span>
+          <strong>{{ totalIOwe | number:'1.2-2' }} ₸</strong>
+        </div>
+      </div>
+      <div class="stat-card balance">
+        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+        <div class="stat-info">
+          <span>Баланс долгов</span>
+          <strong [class.positive]="totalOweMe - totalIOwe >= 0" [class.negative]="totalOweMe - totalIOwe < 0">
+            {{ (totalOweMe - totalIOwe) | number:'1.2-2' }} ₸
+          </strong>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Форма добавления -->
+    <div class="add-form-card" *ngIf="showAddForm">
+      <div class="form-header">
+        <h3><i class="fas fa-plus-circle"></i> Добавить долг</h3>
+        <button class="btn-close" (click)="showAddForm = false">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Имя/Название</label>
+          <input type="text" [(ngModel)]="newDebt.person_name" placeholder="Кому/от кого?" class="form-control">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-money-bill"></i> Сумма</label>
+          <input type="number" [(ngModel)]="newDebt.amount" placeholder="Сумма в тенге" class="form-control">
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-exchange-alt"></i> Тип долга</label>
+            <select [(ngModel)]="newDebt.debt_type" class="form-control">
+              <option value="owe_me">📥 Должны мне</option>
+              <option value="i_owe">📤 Я должен</option>
+            </select>
+          </div>
+        <div class="form-group">
+          <label><i class="fas fa-calendar"></i> Срок возврата</label>
+          <input type="date" [(ngModel)]="newDebt.due_date" class="form-control">
+        </div>
+        <div class="form-group full-width">
+          <label><i class="fas fa-align-left"></i> Описание</label>
+          <input type="text" [(ngModel)]="newDebt.description" placeholder="Дополнительная информация" class="form-control">
+        </div>
+      </div>
+      <button class="btn-submit" (click)="addDebt()">
+        <i class="fas fa-save"></i> Сохранить долг
+      </button>
+    </div>
+  
+    <!-- Списки долгов -->
+    <div class="debts-sections">
+      <!-- Должны мне -->
+      <div class="debts-section">
+        <div class="section-header">
+          <i class="fas fa-arrow-down"></i>
+          <h3>Должны мне</h3>
+          <span class="section-count">{{ getOweMeCount() }}</span>
+        </div>
+  
+        <div *ngIf="isLoading" class="loading"><div class="spinner"></div><p>Загрузка...</p></div>
+  
+        <div *ngFor="let debt of getOweMeDebts()" class="debt-card" [class.paid]="debt.is_paid">
+          <div class="debt-header">
+            <div class="debt-icon owe-me-icon">
+              <i class="fas fa-user-friends"></i>
+            </div>
+            <div class="debt-info">
+              <h4>{{ debt.person_name }}</h4>
+              <p class="debt-desc">{{ debt.description || 'Без описания' }}</p>
+            </div>
+            <div class="debt-amount positive">
+              +{{ debt.amount | number:'1.2-2' }} ₸
+            </div>
+          </div>
+          
+          <div class="debt-footer">
+            <div class="debt-date">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Срок: {{ formatDate(debt.due_date) }}</span>
+              <span *ngIf="!debt.is_paid && debt.due_date" 
+                    class="days-left" [class.urgent]="getDaysLeft(debt.due_date) < 3 && getDaysLeft(debt.due_date) >= 0"
+                    [class.expired]="getDaysLeft(debt.due_date) < 0">
+                <ng-container *ngIf="getDaysLeft(debt.due_date) > 0">Осталось {{ getDaysLeft(debt.due_date) }} дней</ng-container>
+                <ng-container *ngIf="getDaysLeft(debt.due_date) === 0">Сегодня срок!</ng-container>
+                <ng-container *ngIf="getDaysLeft(debt.due_date) < 0">Просрочено на {{ -getDaysLeft(debt.due_date) }} дней</ng-container>
+              </span>
+            </div>
+            <div class="debt-actions" *ngIf="!debt.is_paid">
+              <button class="btn-paid" (click)="markAsPaid(debt)">
+                <i class="fas fa-check-circle"></i> Отметить оплаченным
+              </button>
+              <button class="btn-delete" (click)="deleteDebt(debt.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <span *ngIf="debt.is_paid" class="paid-badge">
+              <i class="fas fa-check"></i> Оплачено
+            </span>
+          </div>
+        </div>
+        <div *ngIf="getOweMeDebts().length === 0 && !isLoading" class="empty-subsection">
+          <p>Нет активных долгов</p>
+        </div>
+      </div>
+  
+      <!-- Я должен -->
+      <div class="debts-section">
+        <div class="section-header">
+          <i class="fas fa-arrow-up"></i>
+          <h3>Я должен</h3>
+          <span class="section-count">{{ getIOweCount() }}</span>
+        </div>
+  
+        <div *ngFor="let debt of getIOweDebts()" class="debt-card" [class.paid]="debt.is_paid">
+          <div class="debt-header">
+            <div class="debt-icon i-owe-icon">
+              <i class="fas fa-hand-holding-usd"></i>
+            </div>
+            <div class="debt-info">
+              <h4>{{ debt.person_name }}</h4>
+              <p class="debt-desc">{{ debt.description || 'Без описания' }}</p>
+            </div>
+            <div class="debt-amount negative">
+              -{{ debt.amount | number:'1.2-2' }} ₸
+            </div>
+          </div>
+          
+          <div class="debt-footer">
+            <div class="debt-date">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Срок: {{ formatDate(debt.due_date) }}</span>
+              <span *ngIf="!debt.is_paid && debt.due_date" 
+                    class="days-left" [class.urgent]="getDaysLeft(debt.due_date) < 3 && getDaysLeft(debt.due_date) >= 0"
+                    [class.expired]="getDaysLeft(debt.due_date) < 0">
+                <ng-container *ngIf="getDaysLeft(debt.due_date) > 0">Осталось {{ getDaysLeft(debt.due_date) }} дней</ng-container>
+                <ng-container *ngIf="getDaysLeft(debt.due_date) === 0">Сегодня срок!</ng-container>
+                <ng-container *ngIf="getDaysLeft(debt.due_date) < 0">Просрочено на {{ -getDaysLeft(debt.due_date) }} дней</ng-container>
+              </span>
+            </div>
+            <div class="debt-actions" *ngIf="!debt.is_paid">
+              <button class="btn-paid" (click)="markAsPaid(debt)">
+                <i class="fas fa-check-circle"></i> Отметить оплаченным
+              </button>
+              <button class="btn-delete" (click)="deleteDebt(debt.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <span *ngIf="debt.is_paid" class="paid-badge">
+              <i class="fas fa-check"></i> Оплачено
+            </span>
+          </div>
+        </div>
+        <div *ngIf="getIOweDebts().length === 0 && !isLoading" class="empty-subsection">
+          <p>Нет активных долгов</p>
+        </div>
+      </div>
+  
+      <div *ngIf="getOweMeCount() === 0 && getIOweCount() === 0 && !isLoading" class="empty-state">
+        <i class="fas fa-hand-holding-usd"></i>
+        <p>У вас нет активных долгов</p>
+        <button class="btn-create-first" (click)="showAddForm = true">
+          <i class="fas fa-plus"></i> Добавить долг
+        </button>
+      </div>
+    </div>
+  </div>

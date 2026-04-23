@@ -1,0 +1,98 @@
+<div class="history-container">
+    <div class="page-header">
+      <div class="header-icon"><i class="fas fa-history"></i></div>
+      <div class="header-text">
+        <h1>История операций</h1>
+        <p>Все ваши доходы и расходы в одном месте</p>
+      </div>
+    </div>
+  
+    <div class="stats-row">
+      <div class="stat-card income-stat">
+        <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+        <div class="stat-info">
+          <span>Общий доход</span>
+          <strong>+{{ totalIncome | number:'1.2-2' }} ₸</strong>
+        </div>
+      </div>
+      <div class="stat-card expense-stat">
+        <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+        <div class="stat-info">
+          <span>Общий расход</span>
+          <strong>-{{ totalExpense | number:'1.2-2' }} ₸</strong>
+        </div>
+      </div>
+      <div class="stat-card balance-stat">
+        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+        <div class="stat-info">
+          <span>Баланс</span>
+          <strong>{{ (totalIncome - totalExpense) | number:'1.2-2' }} ₸</strong>
+        </div>
+      </div>
+    </div>
+  
+    <div class="filters-card">
+      <div class="filters-header">
+        <div class="filters-title"><i class="fas fa-sliders-h"></i><h3>Фильтры</h3></div>
+        <button class="btn-reset" (click)="resetFilters()"><i class="fas fa-undo-alt"></i> Сбросить все</button>
+      </div>
+      
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-chart-line"></i> Тип операции</label>
+          <div class="type-buttons">
+            <button class="type-btn" [class.active]="filterType === 'all'" (click)="filterType = 'all'; applyFilters()"><i class="fas fa-list"></i> Все</button>
+            <button class="type-btn income-btn" [class.active]="filterType === 'income'" (click)="filterType = 'income'; applyFilters()"><i class="fas fa-arrow-up"></i> Доходы</button>
+            <button class="type-btn expense-btn" [class.active]="filterType === 'expense'" (click)="filterType = 'expense'; applyFilters()"><i class="fas fa-arrow-down"></i> Расходы</button>
+          </div>
+        </div>
+  
+        <div class="filter-group">
+          <label class="filter-label"><i class="fas fa-search"></i> Поиск</label>
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchQuery" (input)="applyFilters()" placeholder="Поиск по описанию..." class="filter-input search-input">
+            <button *ngIf="searchQuery" class="clear-search" (click)="searchQuery = ''; applyFilters()"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+  
+        <div class="filter-group date-range">
+          <label class="filter-label"><i class="fas fa-calendar-alt"></i> Период</label>
+          <div class="date-inputs">
+            <div class="date-wrapper"><span class="date-label">От</span><input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" class="filter-input date-input"></div>
+            <div class="date-divider"><i class="fas fa-arrow-right"></i></div>
+            <div class="date-wrapper"><span class="date-label">До</span><input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" class="filter-input date-input"></div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="active-filters" *ngIf="filterType !== 'all' || searchQuery || dateFrom || dateTo">
+        <span class="active-label">Активные фильтры:</span>
+        <div class="filter-tags">
+          <span *ngIf="filterType !== 'all'" class="filter-tag"><i class="fas" [class.fa-arrow-up]="filterType === 'income'" [class.fa-arrow-down]="filterType === 'expense'"></i> {{ filterType === 'income' ? 'Только доходы' : 'Только расходы' }}<button class="remove-tag" (click)="filterType = 'all'; applyFilters()">✕</button></span>
+          <span *ngIf="searchQuery" class="filter-tag"><i class="fas fa-search"></i> "{{ searchQuery }}"<button class="remove-tag" (click)="searchQuery = ''; applyFilters()">✕</button></span>
+          <span *ngIf="dateFrom" class="filter-tag"><i class="fas fa-calendar"></i> с {{ dateFrom | date:'dd.MM.yyyy' }}<button class="remove-tag" (click)="dateFrom = ''; applyFilters()">✕</button></span>
+          <span *ngIf="dateTo" class="filter-tag"><i class="fas fa-calendar"></i> по {{ dateTo | date:'dd.MM.yyyy' }}<button class="remove-tag" (click)="dateTo = ''; applyFilters()">✕</button></span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="transactions-card">
+      <div class="card-header"><h3><i class="fas fa-list"></i> Операции</h3><span class="transactions-count">{{ filteredTransactions.length }} операций</span></div>
+  
+      <div *ngIf="isLoading" class="loading"><div class="spinner"></div><p>Загрузка истории...</p></div>
+  
+      <div *ngIf="!isLoading" class="transactions-list">
+        <div *ngFor="let transaction of filteredTransactions" class="transaction-item">
+          <div class="transaction-icon" [style.background]="transaction.category_color"><i class="fas" [class.fa-arrow-up]="transaction.is_income" [class.fa-arrow-down]="!transaction.is_income"></i></div>
+          <div class="transaction-info">
+            <div class="transaction-title"><h4>{{ transaction.description || transaction.merchant }}</h4><span class="transaction-category">{{ transaction.category_name }}</span></div>
+            <div class="transaction-date"><i class="fas fa-calendar-alt"></i> {{ formatDate(transaction.date) }}</div>
+          </div>
+          <div class="transaction-amount" [class.income-amount]="transaction.is_income" [class.expense-amount]="!transaction.is_income">{{ transaction.is_income ? '+' : '-' }}{{ transaction.amount | number:'1.2-2' }} ₸</div>
+          <button class="btn-delete" (click)="deleteTransaction(transaction.id)"><i class="fas fa-trash"></i></button>
+        </div>
+        <div *ngIf="filteredTransactions.length === 0" class="empty-state"><i class="fas fa-inbox"></i><p>Операций не найдено</p><p class="empty-hint">Попробуйте изменить фильтры</p></div>
+      </div>
+    </div>
+  </div>

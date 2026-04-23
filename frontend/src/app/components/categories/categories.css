@@ -1,0 +1,294 @@
+.categories-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Шапка страницы */
+  .page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  
+  .header-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header-icon i {
+    font-size: 35px;
+  }
+  
+  .header-text h1 {
+    font-size: 28px;
+    margin: 0 0 5px 0;
+  }
+  
+  .header-text p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+  }
+  
+  /* Карточка добавления */
+  .add-category-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .add-category-card h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .add-category-card h3 i {
+    color: #667eea;
+    font-size: 22px;
+  }
+  
+  .add-category-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+  }
+  
+  .form-group label i {
+    margin-right: 6px;
+    color: #667eea;
+  }
+  
+  .form-control {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+  }
+  
+  .btn-add {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+  }
+  
+  .btn-add:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Секция категорий */
+  .categories-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .section-header h3 {
+    margin: 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .section-header h3 i {
+    color: #667eea;
+  }
+  
+  .categories-count {
+    background: #f0f0f0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  /* Сетка категорий */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+  }
+  
+  .category-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s;
+    position: relative;
+  }
+  
+  .category-card:hover {
+    transform: translateX(5px);
+    background: #f0f0f0;
+  }
+  
+  .category-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+  }
+  
+  .category-info {
+    flex: 1;
+  }
+  
+  .category-info h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .category-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .income-badge {
+    background: #d1fae5;
+    color: #10b981;
+  }
+  
+  .expense-badge {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+  
+  .category-edit, .category-delete {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .category-edit {
+    background: #e0e7ff;
+    color: #667eea;
+  }
+  
+  .category-edit:hover {
+    background: #c7d2fe;
+    transform: scale(1.05);
+  }
+  
+  .category-delete {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+  
+  .category-delete:hover {
+    background: #fecaca;
+    transform: scale(1.05);
+  }
+  
+  /* Пустое состояние */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+  
+  .empty-state i {
+    font-size: 60px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  .empty-state p {
+    margin: 5px 0;
+  }
+  
+  .empty-hint {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .add-category-form {
+      grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+  }

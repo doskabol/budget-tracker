@@ -1,109 +1,59 @@
-# 💰 Budget Tracker — CoinKeeper Style
+# Frontend
 
-A simple and intuitive web application to help you track your income, expenses, and manage your personal budget effectively. Built as a group project for web development course.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
 
-**Group Members:** Abdikarim Dosbol, Kystaubekov Mukhamedjan
+## Development server
 
-> *Group of 2 students (approved by instructor)*
-
----
-
-## 🚀 Features
-
-- ✅ Add income and expense transactions
-- ✅ Real-time balance, total income, and total expenses
-- ✅ Edit and delete transactions
-- ✅ Filter transactions by category
-- ✅ Category management with detailed statistics
-- ✅ Saving goals with progress bar
-- ✅ Debt tracking ("I owe" / "Owe me" sections)
-- ✅ Dynamic chart (last 7 days income/expenses)
-- ✅ JWT authentication (login/register/logout)
-- ✅ Fully responsive design (mobile-friendly)
-- ✅ Persistent data storage using PostgreSQL/SQLite
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Angular 17, TypeScript, HTML5, CSS3, Chart.js, Font Awesome |
-| **Backend** | Django 4, Django REST Framework (DRF) |
-| **Authentication** | Token Authentication (JWT) |
-| **Database** | SQLite (development) |
-| **Version Control** | Git & GitHub |
-| **API Testing** | Postman |
-
----
-
-## 📁 Project Structure
-budget-tracker/
-├── backend/ # Django backend
-│ ├── api/ # Main application
-│ │ ├── models.py # Database models
-│ │ ├── views.py # API endpoints (FBV + CBV)
-│ │ ├── serializers.py # DRF serializers
-│ │ └── urls.py # API routes
-│ └── budget_tracker/ # Django settings
-├── frontend/ # Angular frontend
-│ └── src/app/
-│ ├── components/ # UI components
-│ ├── services/ # API services (HttpClient)
-│ ├── models/ # TypeScript interfaces
-│ ├── guards/ # Auth guard for routes
-│ └── interceptors/ # JWT token interceptor
-├── postman/ # Postman collection
-└── README.md
-
-
----
-
-## 🗄️ Database Models
-
-| Model | Description |
-|-------|-------------|
-| `User` | Django default user model |
-| `Category` | Transaction categories (food, transport, etc.) |
-| `Transaction` | Income/expense records (amount, type, date, category) |
-| `SavingGoal` | Savings goals with target amount and progress |
-| `Debt` | Debts with direction (I owe / Owe me) |
-| `BudgetLimit` | Monthly budget limits per category |
-
-### Relationships (ForeignKey)
-- `Transaction → Category`
-- `Transaction → User`
-- `SavingGoal → User`
-- `Debt → User`
-- `BudgetLimit → Category & User`
-
----
-
-## 🔌 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/register/` | User registration |
-| POST | `/api/login/` | Login (returns token) |
-| POST | `/api/logout/` | Logout (deletes token) |
-| GET | `/api/transactions/` | List all transactions |
-| POST | `/api/transactions/` | Create transaction |
-| PUT | `/api/transactions/{id}/` | Update transaction |
-| DELETE | `/api/transactions/{id}/` | Delete transaction |
-| GET | `/api/categories/` | List categories |
-| POST | `/api/categories/` | Create category |
-| GET | `/api/saving-goals/` | List saving goals |
-| POST | `/api/saving-goals/` | Create saving goal |
-| GET | `/api/debts/` | List debts |
-| POST | `/api/debts/` | Create debt |
-| GET | `/api/stats/` | Balance + chart statistics |
-
----
-
-## 🖥️ Installation & Setup
-
-### 1. Clone the repository
+To start a local development server, run:
 
 ```bash
-git clone https://github.com/your-username/budget-tracker.git
-cd budget-tracker
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

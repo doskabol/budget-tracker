@@ -1,0 +1,50 @@
+<div class="premium-container">
+    <div class="premium-header">
+      <div class="header-icon"><i class="fas fa-crown"></i></div>
+      <h1>Премиум подписка</h1>
+      <p>Откройте все возможности Budget Tracker</p>
+    </div>
+  
+    <!-- Сообщение -->
+    <div *ngIf="message" class="message" [class.success]="messageType === 'success'">
+      <i class="fas fa-check-circle"></i> {{ message }}
+    </div>
+  
+    <!-- Уже есть подписка -->
+    <div *ngIf="hasSubscription()" class="active-subscription">
+      <i class="fas fa-check-circle"></i>
+      <h3>У вас активная премиум подписка!</h3>
+      <p>Действует до: {{ getExpiryDate() }}</p>
+      <button class="btn-dashboard" routerLink="/dashboard">Перейти в дашборд</button>
+    </div>
+  
+    <!-- Тарифы -->
+    <div *ngIf="!hasSubscription()" class="plans-grid">
+      <div *ngFor="let plan of plans" class="plan-card" [class.popular]="plan.popular">
+        <div *ngIf="plan.popular" class="popular-badge">🔥 Популярный</div>
+        <div class="plan-icon"><i class="fas fa-gem"></i></div>
+        <h3>{{ plan.days }} дней</h3>
+        <div class="price">{{ plan.price }} ₸</div>
+        <div *ngIf="plan.save > 0" class="save">Экономия {{ plan.save }}%</div>
+        <div class="features">
+          <p><i class="fas fa-check-circle"></i> Динамика доходов/расходов</p>
+          <p><i class="fas fa-check-circle"></i> Управление долгами</p>
+          <p><i class="fas fa-check-circle"></i> Расширенная аналитика</p>
+          <p><i class="fas fa-check-circle"></i> Приоритетная поддержка</p>
+        </div>
+        <button class="btn-buy" (click)="buyPlan(plan.days, plan.price)">
+          <i class="fas fa-shopping-cart"></i> Оформить
+        </button>
+      </div>
+    </div>
+  
+    <div class="features-section">
+      <h3>Что вы получите с премиум?</h3>
+      <div class="features-grid">
+        <div class="feature"><i class="fas fa-chart-line"></i> Динамика за 7 дней</div>
+        <div class="feature"><i class="fas fa-hand-holding-usd"></i> Управление долгами</div>
+        <div class="feature"><i class="fas fa-chart-pie"></i> Расширенная аналитика</div>
+        <div class="feature"><i class="fas fa-headset"></i> Приоритетная поддержка</div>
+      </div>
+    </div>
+  </div>

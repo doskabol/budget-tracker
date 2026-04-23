@@ -1,0 +1,247 @@
+.map-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .map-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: white;
+    flex-wrap: wrap;
+  }
+  
+  .header-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header-icon i {
+    font-size: 35px;
+  }
+  
+  .header-text {
+    flex: 1;
+  }
+  
+  .header-text h1 {
+    margin: 0 0 5px;
+    font-size: 28px;
+  }
+  
+  .header-text p {
+    margin: 0;
+    opacity: 0.9;
+  }
+  
+  /* Фильтр */
+  .filter-bar {
+    background: white;
+    border-radius: 20px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .filter-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .filter-title i {
+    color: #667eea;
+  }
+  
+  .filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-btn {
+    padding: 10px 20px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .filter-btn i {
+    font-size: 14px;
+  }
+  
+  .filter-btn.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+  }
+  
+  .filter-btn.bank-btn.active {
+    background: #667eea;
+    border-color: #667eea;
+  }
+  
+  .filter-btn.atm-btn.active {
+    background: #10b981;
+    border-color: #10b981;
+  }
+  
+  .filter-btn:hover:not(.active) {
+    border-color: #ccc;
+    background: #f8f9fa;
+  }
+  
+  /* Статистика */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+  }
+  
+  .bank-icon { background: #667eea; }
+  .atm-icon { background: #10b981; }
+  .total-icon { background: #f59e0b; }
+  
+  .stat-info {
+    flex: 1;
+  }
+  
+  .stat-info span {
+    font-size: 12px;
+    color: #999;
+    display: block;
+  }
+  
+  .stat-info strong {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* Карта */
+  .map-wrapper {
+    width: 100%;
+    height: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    background: #f0f0f0;
+  }
+  
+  /* Футер */
+  .map-footer {
+    background: white;
+    border-radius: 15px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #666;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .map-footer i {
+    color: #667eea;
+    font-size: 18px;
+  }
+  
+  .footer-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  
+  .legend {
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: #999;
+  }
+  
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .map-wrapper {
+      height: 400px;
+    }
+    
+    .map-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .filter-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .filter-buttons {
+      justify-content: center;
+    }
+    
+    .stats-row {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    
+    .footer-text {
+      font-size: 11px;
+    }
+    
+    .legend {
+      flex-wrap: wrap;
+    }
+  }

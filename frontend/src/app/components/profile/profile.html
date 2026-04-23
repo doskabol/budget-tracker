@@ -1,0 +1,129 @@
+<div class="profile-container">
+    <!-- Сообщение -->
+    <div *ngIf="message.text" class="toast-message" [class.toast-success]="message.type === 'success'">
+      <i class="fas fa-check-circle"></i> {{ message.text }}
+    </div>
+  
+    <div class="profile-card">
+      <!-- Премиум бейдж -->
+      <div *ngIf="authService.hasSubscription()" class="premium-badge">
+        <i class="fas fa-crown"></i> Премиум аккаунт
+      </div>
+  
+      <!-- Аватар -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <img [src]="getAvatarUrl()" alt="Avatar" class="avatar">
+          <label class="avatar-upload">
+            <i class="fas fa-camera"></i>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+          </label>
+        </div>
+        <button *ngIf="selectedFile" class="btn-upload-avatar" (click)="uploadAvatar()">
+          <i class="fas fa-save"></i> Сохранить аватар
+        </button>
+        <h2>{{ profile.first_name || profile.username }}</h2>
+        <p class="username">@{{ profile.username }}</p>
+      </div>
+  
+      <!-- Статистика -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value">{{ stats.transactionsCount }}</div>
+          <div class="stat-label">Транзакций</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-value">{{ stats.categoriesCount }}</div>
+          <div class="stat-label">Категорий</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-value">{{ stats.goalsCount }}</div>
+          <div class="stat-label">Целей</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-value">{{ stats.memberSince }}</div>
+          <div class="stat-label">С нами</div>
+        </div>
+      </div>
+  
+      <!-- Личная информация -->
+      <div class="info-section">
+        <div class="section-header">
+          <h3><i class="fas fa-user-circle"></i> Личная информация</h3>
+          <button *ngIf="!isEditing" class="btn-edit" (click)="startEdit()">
+            <i class="fas fa-pen"></i> Редактировать
+          </button>
+        </div>
+  
+        <!-- Режим просмотра -->
+        <div *ngIf="!isEditing" class="info-grid">
+          <div class="info-item">
+            <label><i class="fas fa-user"></i> Имя пользователя</label>
+            <p>{{ profile.username }}</p>
+          </div>
+          <div class="info-item">
+            <label><i class="fas fa-envelope"></i> Email</label>
+            <p>{{ profile.email }}</p>
+          </div>
+          <div class="info-item">
+            <label><i class="fas fa-user-tag"></i> Имя</label>
+            <p>{{ profile.first_name || '—' }}</p>
+          </div>
+          <div class="info-item">
+            <label><i class="fas fa-user-tag"></i> Фамилия</label>
+            <p>{{ profile.last_name || '—' }}</p>
+          </div>
+          <div class="info-item">
+            <label><i class="fas fa-phone"></i> Телефон</label>
+            <p>{{ profile.phone || '—' }}</p>
+          </div>
+          <div class="info-item">
+            <label><i class="fas fa-id-card"></i> ID пользователя</label>
+            <p>#{{ profile.id }}</p>
+          </div>
+        </div>
+  
+        <!-- Режим редактирования -->
+        <div *ngIf="isEditing" class="edit-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Имя</label>
+              <input type="text" [(ngModel)]="editProfile.first_name" class="form-control" placeholder="Ваше имя">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-user-tag"></i> Фамилия</label>
+              <input type="text" [(ngModel)]="editProfile.last_name" class="form-control" placeholder="Ваша фамилия">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label><i class="fas fa-envelope"></i> Email</label>
+              <input type="email" [(ngModel)]="editProfile.email" class="form-control">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Телефон</label>
+              <input type="tel" [(ngModel)]="editProfile.phone" class="form-control" placeholder="+7 XXX XXX XX XX">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-cancel" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> Отмена
+            </button>
+            <button class="btn-save" (click)="saveProfile()">
+              <i class="fas fa-save"></i> Сохранить
+            </button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Премиум кнопка (если нет подписки) -->
+      <div *ngIf="!authService.hasSubscription()" class="upgrade-section">
+        <button class="btn-upgrade" routerLink="/premium">
+          <i class="fas fa-crown"></i> Купить премиум
+        </button>
+      </div>
+    </div>
+  </div>

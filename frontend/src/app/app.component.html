@@ -1,1 +1,57 @@
-<router-outlet></router-outlet>
+<div class="app-container">
+  <button class="burger-btn" (click)="toggleMenu()" *ngIf="authService.isLoggedIn()">
+    ☰
+  </button>
+
+  <aside class="sidebar" [class.open]="isMenuOpen" *ngIf="authService.isLoggedIn()">
+    <div class="sidebar-header">
+      <h2>Budget Tracker</h2>
+      <button class="close-btn" (click)="closeMenu()">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-chart-line"></i> Главная
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-user"></i> Профиль
+      </a>
+      <a routerLink="/history" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-history"></i> История
+      </a>
+      <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-folder"></i> Категории
+      </a>
+      <a routerLink="/goals" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-bullseye"></i> Цели
+      </a>
+      <a *ngIf="authService.hasSubscription()" routerLink="/debts" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-money-bill-wave"></i> Долги
+      </a>
+      <a routerLink="/map" routerLinkActive="active" (click)="closeMenu()">
+        <i class="fas fa-map-marker-alt"></i> Банкоматы
+      </a>
+      <a *ngIf="!authService.hasSubscription()" routerLink="/premium" routerLinkActive="active" (click)="closeMenu()" class="premium-link">
+        <i class="fas fa-crown"></i> Премиум
+      </a>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="authors">
+        <p class="authors-title">Разработчики</p>
+        <p class="author-name">Abdikarim Dosbol</p>
+        <p class="author-name">Kystaubekov Mukhamedzhan</p>
+      </div>
+      <div class="copyright">
+        © 2024 Budget Tracker
+      </div>
+    </div>
+  </aside>
+
+  <div class="overlay" [class.show]="isMenuOpen" (click)="closeMenu()"></div>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
